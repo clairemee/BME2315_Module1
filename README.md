@@ -1,2 +1,2 @@
 # BME2315_Module1
-Github repository for module 1 project
+Repository For Module 1 Alzheimer's Project
