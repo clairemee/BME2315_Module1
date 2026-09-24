@@ -1,4 +1,7 @@
-# AI USAGE STATEMENT: I used AI to help with labeling the graphs.
+# AI USAGE STATEMENT: I used AI to help with labeling the graphs. 
+#   I also used AI to help with the linear regression code for the scatter plot 
+#   because the code from the lecture was not working for me. 
+#   Additionally, AI was used to troubleshoot any problems I was having with the code and to explain some that I didn't understand.
 
 
 import pandas as pd
@@ -29,73 +32,80 @@ for patient in filtered:
     print(patient)
 
 ########## bar graph code: 
-# Analyzing amyloid beta levels between female and male patients
+# Analyzing brain weightbetween dementia and no dementia patients
 
-# start with empty lists for amyloid beta levels in female and male respectively
-abeta42_female = []
-abeta42_male = []
+# start with empty lists for brain weight with dementia and no dementia respectively
+brain_weight_dementia = []
+brain_weight_no_dementia = []
 
-for patient in Patient.filter(Patient.all_patients, sex = "Female"):
-    abeta42_female.append(patient.abeta42_level)
-for patient in Patient.filter(Patient.all_patients, sex = "Male"):
-    abeta42_male.append(patient.abeta42_level)
+for patient in Patient.filter(Patient.all_patients, cog_status = "Dementia"):
+    if patient.brain_weight is not None:
+        brain_weight_dementia.append(patient.brain_weight)
+for patient in Patient.filter(Patient.all_patients, cog_status = "No dementia"):
+    if patient.brain_weight is not None:
+        brain_weight_no_dementia.append(patient.brain_weight)
 
-# calculating the mean of each data set for female/male
-x_female_bar = statistics.mean(abeta42_female)
-x_male_bar = statistics.mean(abeta42_male)
+# calculating the mean of each data set for dementia/no dementia
+x_dementia_bar = statistics.mean(brain_weight_dementia)
+x_no_dementia_bar = statistics.mean(brain_weight_no_dementia)
 
-# calculating the standard deviation for female/male
-abeta42_female_stdev = statistics.stdev(abeta42_female)
-abeta42_male_stdev = statistics.stdev(abeta42_male)
+# calculating the standard deviation for dementia/no dementia
+brain_weight_dementia_stdev = statistics.stdev(brain_weight_dementia)
+brain_weight_no_dementia_stdev = statistics.stdev(brain_weight_no_dementia)
 
 # print calculations
-print(f'x_female_bar = {x_female_bar}, abeta42_female_stdev {abeta42_female_stdev}')
-print(f'x_male_bar = {x_male_bar}, abeta42_male_stdev {abeta42_male_stdev}')
+print(f'x_dementia_bar = {x_dementia_bar}, brain_weight_dementia_stdev {brain_weight_dementia_stdev}')
+print(f'x_no_dementia_bar = {x_no_dementia_bar}, brain_weight_no_dementia_stdev {brain_weight_no_dementia_stdev}')
 
 # setting up axis labels, heights, error bar length
-patient_sex_cols = ['Female Patients', 'Male Patients']
-mean_abeta42 = [x_female_bar, x_male_bar]
-stdev_abeta42 = [abeta42_female_stdev, abeta42_male_stdev]
+patient_cog_status_cols = ['Dementia', 'No Dementia']
+mean_brain_weight = [x_dementia_bar, x_no_dementia_bar]
+stdev_brain_weight = [brain_weight_dementia_stdev, brain_weight_no_dementia_stdev]
 
-yerr = [np.zeros(len(mean_abeta42)), stdev_abeta42] # sets the bottom as zero
+yerr = [np.zeros(len(mean_brain_weight)), stdev_brain_weight] # sets the bottom as zero
 
 
-t_stat, p_val = stats.ttest_ind(abeta42_female, abeta42_male)
+t_stat, p_val = stats.ttest_ind(brain_weight_dementia, brain_weight_no_dementia)
 print(f't_stat =  {t_stat}, p_val = {p_val}')
 
 # plot graph with colors and error bars
-plt.bar(patient_sex_cols, mean_abeta42, yerr = yerr, capsize=10, color=["pink", "blue"])
-plt.title("Average Aβ42 Levels by Sex") # set title
+plt.bar(patient_cog_status_cols, mean_brain_weight, yerr = yerr, capsize=10, color=["pink", "blue"])
+plt.title("Average Brain Weight by Cognitive Status") # set title
+
 #labeling axises
-plt.xlabel("Sex")
-plt.ylabel("Average Aβ42 Level (pg/ug)")
-y_max = max(mean_abeta42) + max(stdev_abeta42) * .4
+plt.xlabel("Cognitive Status")
+plt.ylabel("Average Brain Weight (g)")
+
+# set y-axis range to 1500 so bars and error caps have plenty of room
+plt.ylim(0, 1500)
+# Position text of p value and t stat 
 plt.text(
-        0.5, y_max,
+        0.5, 0.92,
         f"t = {t_stat:.2f}\np = {p_val:.3e}",
         ha = 'center',
-        va = 'bottom'
+        va = 'top',
+        transform = plt.gca().transAxes
         )
 plt.show()
 
 ########## scatter plot code: 
-# Analyzing correlation between amyloid beta levels and age of death
-# creating empty lists for patients age at death and amyloid beta levels
-patient_age_at_death = []
+# Analyzing correlation between amyloid beta levels and brain weight
+# creating empty lists for patients brain weight and amyloid beta levels
 patient_abeta42 = []
+patient_brain_weight = []
 
 # populating the empty lists above
 for patient in Patient.all_patients:
-    patient_age_at_death.append(patient.age_at_death)
-for patient in Patient.all_patients:
-    patient_abeta42.append(patient.abeta42_level)
+    if patient.abeta42_level is not None and patient.brain_weight is not None:
+        patient_abeta42.append(patient.abeta42_level)
+        patient_brain_weight.append(patient.brain_weight)
 
 # defining x and y axises
-X = patient_age_at_death # independent variable (age at death)
-y = patient_abeta42 # dependent variable (amyloid beta level)
+X = patient_abeta42 # independent variable (amyloid beta level)
+y = patient_brain_weight # dependent variable (brain weight)
 
-array_x = np.asarray(patient_age_at_death, dtype = float).reshape(-1, 1) # shape: (n_samples, 1)
-array_y = np.asarray(patient_abeta42, dtype = float).ravel() # shape: (n_samples,)
+array_x = np.asarray(patient_abeta42, dtype = float).reshape(-1, 1) # shape: (n_samples, 1)
+array_y = np.asarray(patient_brain_weight, dtype = float).ravel() # shape: (n_samples,)
 
 model = LinearRegression()
 model.fit(array_x, array_y)
@@ -114,19 +124,20 @@ plt.plot(
     color="red",
     linewidth=2,
     label="Linear regression"
-)
+) # adding the regression line
+
 slope = model.coef_[0]
 intercept = model.intercept_
 r_squared = model.score(array_x, array_y)
 plt.text(
-    0.05, 0.95,
+    0.55, 0.95,
     f"y = {slope:.3f}x + {intercept:.3f}\nR² = {r_squared:.3f}",
     transform=plt.gca().transAxes,
     verticalalignment="top",
     fontsize=11
-)
+) # adding the R^2 value and the line equation
 
-plt.xlabel('Age at Death (Years)')
-plt.ylabel('Aβ42 Level (pg/ug)')
-plt.title('Scatter Plot of Age at Death vs Aβ42 Level')
+plt.xlabel('Aβ42 Level (pg/ug)')
+plt.ylabel('Brain Weight (g)')
+plt.title('Scatter Plot of Aβ42 Level vs Brain Weight')
 plt.show()
