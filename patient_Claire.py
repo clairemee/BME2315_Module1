@@ -19,7 +19,7 @@ class Patient:
     
     # the following lines set how the patient will be displayed as text when printed
     def __repr__(self): 
-        return f"Patient({self.id} | Sex: {self.sex} | Age at Death: {self.age_at_death}"f"Cognitive Status: {self.cog_status} | Aβ42: {self.abeta42_level} pg/ug | pTAU: {self.ptau_level} pg/ug | Brain Weight: {self.brain_weight} g)"
+        return f"Patient {self.id}: (Sex: {self.sex} | Age at Death: {self.age_at_death} | Cognitive Status: {self.cog_status} | Aβ42: {self.abeta42_level} pg/ug | pTAU: {self.ptau_level} pg/ug | Brain Weight: {self.brain_weight} g)"
 
     # retrieves patient age at death
     def get_age_death(self):

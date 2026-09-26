@@ -1,7 +1,7 @@
 # AI USAGE STATEMENT: I used AI to help with labeling the graphs. 
-#   I also used AI to help with the linear regression code for the scatter plot 
-#   because the code from the lecture was not working for me. 
-#   Additionally, AI was used to troubleshoot any problems I was having with the code and to explain some that I didn't understand.
+#   I also used AI to help with the linear regression code for the scatter plot because the code from the lecture was not working for me. 
+#   Additionally, AI was used to troubleshoot any problems/errors I was having with the code and to explain some lines that I didn't 
+#   understand such as the reason for the error bar being set to the top of the bar.
 
 
 import pandas as pd
@@ -18,7 +18,7 @@ df = pd.read_csv("/Users/clair/Documents/BME 2315/Module 1/BME2315_Module1/Metad
 for header in df.columns:
     print(header)
 
-######### code for assignment starts here:
+######### code for patient assignment starts here:
 # the following line creates objects from the .csv data
 Patient.instantiate_from_csv("/Users/clair/Documents/BME 2315/Module 1/BME2315_Module1/Metadata and Protein Data for Module 1.csv") 
 # sort and print patients based on age of death
@@ -32,7 +32,7 @@ for patient in filtered:
     print(patient)
 
 ########## bar graph code: 
-# Analyzing brain weightbetween dementia and no dementia patients
+# Analyzing brain weight between dementia and no dementia patients
 
 # start with empty lists for brain weight with dementia and no dementia respectively
 brain_weight_dementia = []
@@ -62,11 +62,11 @@ patient_cog_status_cols = ['Dementia', 'No Dementia']
 mean_brain_weight = [x_dementia_bar, x_no_dementia_bar]
 stdev_brain_weight = [brain_weight_dementia_stdev, brain_weight_no_dementia_stdev]
 
-yerr = [np.zeros(len(mean_brain_weight)), stdev_brain_weight] # sets the bottom as zero
+yerr = [np.zeros(len(mean_brain_weight)), stdev_brain_weight] # sets the error bottom as the top of the bar
 
 
 t_stat, p_val = stats.ttest_ind(brain_weight_dementia, brain_weight_no_dementia)
-print(f't_stat =  {t_stat}, p_val = {p_val}')
+print(f't_stat =  {t_stat}, p_val = {p_val}') # finding the p value and t statistic
 
 # plot graph with colors and error bars
 plt.bar(patient_cog_status_cols, mean_brain_weight, yerr = yerr, capsize=10, color=["pink", "blue"])
@@ -78,6 +78,7 @@ plt.ylabel("Average Brain Weight (g)")
 
 # set y-axis range to 1500 so bars and error caps have plenty of room
 plt.ylim(0, 1500)
+
 # Position text of p value and t stat 
 plt.text(
         0.5, 0.92,
