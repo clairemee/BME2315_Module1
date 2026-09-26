@@ -81,6 +81,10 @@ for patient in Patient.filter(Patient.all_patients, sex="Female", cognitive_stat
 for patient in Patient.filter(Patient.all_patients, sex="Male", cognitive_status="Dementia"):
     ptau_male.append(patient.ptau)
 
+#this tests if mean pTAU differs between female and male donors with dementia
+t_stat_sex, p_val_sex = stats.ttest_ind(ptau_female, ptau_male)
+print(f'Female vs. male donors with dementia: t_stat = {t_stat_sex}, p_val = {p_val_sex}')
+
 #this calculates the mean and sample standard deviation for each sex
 x_female_bar = statistics.mean(ptau_female)
 x_male_bar = statistics.mean(ptau_male)
@@ -101,6 +105,16 @@ plt.bar(Patient_sex_cols, mean_sex, yerr=stdev_sex,
 plt.title("Mean pTAU in Donors with Dementia (± SD)")
 plt.xlabel("Sex")
 plt.ylabel("Mean pTAU Concentration (pg/ug)")
+#this displays the female-versus-male t-test results above the error bars
+y_max_sex = max(mean_sex) + max(stdev_sex) * 1.2
+plt.text(
+    0.5, y_max_sex,
+    f't = {t_stat_sex:.2f}\np = {p_val_sex:.3e}',
+    ha='center',
+    va='bottom'
+)
+#this leaves enough space for both lines of text
+plt.ylim(0, y_max_sex + max(stdev_sex) * .6)
 plt.tight_layout()
 plt.show()
 
