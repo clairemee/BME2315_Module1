@@ -21,10 +21,10 @@ class Patient:
     def __repr__(self): 
         return f"Patient {self.id}: (Sex: {self.sex} | Age at Death: {self.age_at_death} | Cognitive Status: {self.cog_status} | Aβ42: {self.abeta42_level} pg/ug | pTAU: {self.ptau_level} pg/ug | Brain Weight: {self.brain_weight} g)"
 
-    # retrieves patient age at death
-    def get_age_death(self):
-        return self.age_at_death
-    
+    # retrieves patient brain weight
+    def get_brain_weight(self):
+        return self.brain_weight
+
     # the following lines read the data from the csv file and create patient objects
     @classmethod
     def instantiate_from_csv(cls, filename: str):

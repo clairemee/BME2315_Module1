@@ -21,8 +21,8 @@ for header in df.columns:
 ######### code for patient assignment starts here:
 # the following line creates objects from the .csv data
 Patient.instantiate_from_csv("/Users/clair/Documents/BME 2315/Module 1/BME2315_Module1/Metadata and Protein Data for Module 1.csv") 
-# sort and print patients based on age of death
-Patient.all_patients.sort(key=Patient.get_age_death, reverse=False)
+# sort and print patients based on brain weight
+Patient.all_patients.sort(key=Patient.get_brain_weight, reverse=False)
 for patient in Patient.all_patients:
     print(patient)
 
